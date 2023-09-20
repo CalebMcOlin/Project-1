@@ -3,6 +3,7 @@ package com.revature.models;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -11,39 +12,42 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int accountId;
+    private int id;
 
     @Column(nullable = false)
-    private int accountAmount;
+    private int balance;
 
-    @OneToMany()
-    private int userId;
+    @ManyToOne
+    private User user;
+
+    @OneToMany(mappedBy = "account")
+    private List<Loan> loans;
 
     public Account() {
     }
 
-    public Account(int accountAmount) {
-        this.accountAmount = accountAmount;
+    public Account(int balance) {
+        this.balance = balance;
     }
 
-    public Account(int accountId, int accountAmount) {
-        this.accountId = accountId;
-        this.accountAmount = accountAmount;
+    public Account(int id, int balance) {
+        this.id = id;
+        this.balance = balance;
     }
 
     public int getAccountId() {
-        return accountId;
+        return id;
     }
 
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setAccountId(int id) {
+        this.id = id;
     }
 
     public int getAmount() {
-        return accountAmount;
+        return balance;
     }
 
-    public void setAmount(int accountAmount) {
-        this.accountAmount = accountAmount;
+    public void setAmount(int balance) {
+        this.balance = balance;
     }
 }

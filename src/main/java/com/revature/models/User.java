@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -12,50 +13,64 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int id;
 
     @Column(nullable = false, unique = true)
-    private String userUsername;
+    private String username;
 
     @Column(nullable = false)
-    private String userPassword;
+    private String password;
+
+    @NonNull
+    private boolean isAdmin;
+
+    @OneToMany(mappedBy = "user")
+    private List<Account> accounts;
 
     public User() {
     }
 
-    public User(String userUsername, String userPassword) {
-        this.userUsername = userUsername;
-        this.userPassword = userPassword;
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public User(int id, String userUsername, String userPassword) {
-        this.userId = id;
-        this.userUsername = userUsername;
-        this.userPassword = userPassword;
+    public User(int id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public int getId() {
-        return userId;
+        return id;
     }
 
     public void setId(int id) {
-        this.userId = id;
+        this.id = id;
     }
 
     public String getUsername() {
-        return userUsername;
+        return username;
     }
 
-    public void setUsername(String userUsername) {
-        this.userUsername = userUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
-        return userPassword;
+        return password;
     }
 
-    public void setPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

@@ -10,53 +10,74 @@ import javax.persistence.*;
 @Component
 public class Loan {
 
-    @Id
+    @Id // Creating the PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int loanId;
 
     @NonNull
-    private int amount;
+    private int loanAmount;
 
-    private boolean isApproved;
+    private boolean loanIsApproved;
 
-    @ManyToOne
-    private Account account;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
+    @JoinColumn(name = "accountId")
+    private Account accountId;
 
     public Loan() {
     }
 
-    public Loan(int amount, boolean isApproved) {
-        this.amount = amount;
-        this.isApproved = isApproved;
+    public Loan(int loanAmount, boolean loanIsApproved, Account accountId) {
+        this.loanAmount = loanAmount;
+        this.loanIsApproved = loanIsApproved;
+        this.accountId = accountId;
     }
 
-    public Loan(int id, int amount, boolean isApproved) {
-        this.id = id;
-        this.amount = amount;
-        this.isApproved = isApproved;
+    public Loan(int loanId, int loanAmount, boolean loanIsApproved, Account accountId) {
+        this.loanId = loanId;
+        this.loanAmount = loanAmount;
+        this.loanIsApproved = loanIsApproved;
+        this.accountId = accountId;
     }
 
-    public int getId() {
-        return id;
+    public int getLoanId() {
+        return loanId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLoanId(int loanId) {
+        this.loanId = loanId;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getLoanAmount() {
+        return loanAmount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setLoanAmount(int loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
-    public boolean isApproved() {
-        return isApproved;
+    public boolean isLoanIsApproved() {
+        return loanIsApproved;
     }
 
-    public void setApproved(boolean approved) {
-        isApproved = approved;
+    public void setLoanIsApproved(boolean loanIsApproved) {
+        this.loanIsApproved = loanIsApproved;
+    }
+
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+
+    @Override
+    public String toString() {
+        return "Loan{" +
+                "loanId=" + loanId +
+                ", loanAmount=" + loanAmount +
+                ", loanIsApproved=" + loanIsApproved +
+                ", accountId=" + accountId +
+                '}';
     }
 }

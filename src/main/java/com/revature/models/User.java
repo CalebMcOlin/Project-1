@@ -4,73 +4,80 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Component
 public class User {
 
-    @Id
+    @Id // Creating the PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userId;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String userUsername;
 
     @Column(nullable = false)
-    private String password;
+    private String userPassword;
 
     @NonNull
-    private boolean isAdmin;
-
-    @OneToMany(mappedBy = "user")
-    private List<Account> accounts;
+    private boolean userIsAdmin;
 
     public User() {
     }
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public User(String userUsername, String userPassword, boolean userIsAdmin) {
+        this.userUsername = userUsername;
+        this.userPassword = userPassword;
+        this.userIsAdmin = userIsAdmin;
     }
 
-    public User(int id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
+    public User(int userId, String userUsername, String userPassword, boolean userIsAdmin) {
+        this.userId = userId;
+        this.userUsername = userUsername;
+        this.userPassword = userPassword;
+        this.userIsAdmin = userIsAdmin;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getId() {
-        return id;
+    public String getUserUsername() {
+        return userUsername;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserUsername(String userUsername) {
+        this.userUsername = userUsername;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean isUserIsAdmin() {
+        return userIsAdmin;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserIsAdmin(boolean userIsAdmin) {
+        this.userIsAdmin = userIsAdmin;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userUsername='" + userUsername + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userIsAdmin=" + userIsAdmin +
+                '}';
+    }
 }

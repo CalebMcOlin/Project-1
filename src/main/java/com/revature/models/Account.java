@@ -3,51 +3,67 @@ package com.revature.models;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "accounts")
 @Component
 public class Account {
 
-    @Id
+    @Id // Creating the PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int accountId;
 
     @Column(nullable = false)
-    private int balance;
+    private int accountBalance;
 
-    @ManyToOne
-    private User user;
-
-    @OneToMany(mappedBy = "account")
-    private List<Loan> loans;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
+    @JoinColumn(name = "userId")
+    private User userId;
 
     public Account() {
     }
 
-    public Account(int balance) {
-        this.balance = balance;
+    public Account(int accountBalance, User userId) {
+        this.accountBalance = accountBalance;
+        this.userId = userId;
     }
 
-    public Account(int id, int balance) {
-        this.id = id;
-        this.balance = balance;
+    public Account(int accountId, int accountBalance, User userId) {
+        this.accountId = accountId;
+        this.accountBalance = accountBalance;
+        this.userId = userId;
     }
 
     public int getAccountId() {
-        return id;
+        return accountId;
     }
 
-    public void setAccountId(int id) {
-        this.id = id;
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
-    public int getAmount() {
-        return balance;
+    public int getAccountBalance() {
+        return accountBalance;
     }
 
-    public void setAmount(int balance) {
-        this.balance = balance;
+    public void setAccountBalance(int accountBalance) {
+        this.accountBalance = accountBalance;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountId=" + accountId +
+                ", accountBalance=" + accountBalance +
+                ", userId=" + userId +
+                '}';
     }
 }

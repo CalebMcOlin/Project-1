@@ -15,7 +15,7 @@ public class Loan {
     private int loanId;
 
     @NonNull
-    private int loanAmount;
+    private double loanAmount;
 
     @NonNull
     private boolean loanIsApproved;
@@ -58,7 +58,7 @@ public class Loan {
         this.loanId = loanId;
     }
 
-    public int getLoanAmount() {
+    public double getLoanAmount() {
         return loanAmount;
     }
 

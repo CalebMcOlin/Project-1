@@ -15,28 +15,39 @@ public class Loan {
     private int loanId;
 
     @NonNull
-    private int loanAmount;
+    private double loanAmount;
 
+    @NonNull
     private boolean loanIsApproved;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
     @JoinColumn(name = "accountId")
-    private Account accountId;
+    private Account account;
 
     public Loan() {
     }
 
-    public Loan(int loanAmount, boolean loanIsApproved, Account accountId) {
+    public Loan(int loanAmount) {
         this.loanAmount = loanAmount;
-        this.loanIsApproved = loanIsApproved;
-        this.accountId = accountId;
+        this.loanIsApproved = false;
     }
 
-    public Loan(int loanId, int loanAmount, boolean loanIsApproved, Account accountId) {
+    public Loan(int loanAmount, boolean loanIsApproved) {
+        this.loanAmount = loanAmount;
+        this.loanIsApproved = loanIsApproved;
+    }
+
+    public Loan(int loanAmount, boolean loanIsApproved, Account account) {
+        this.loanAmount = loanAmount;
+        this.loanIsApproved = loanIsApproved;
+        this.account = account;
+    }
+
+    public Loan(int loanId, int loanAmount, boolean loanIsApproved, Account account) {
         this.loanId = loanId;
         this.loanAmount = loanAmount;
         this.loanIsApproved = loanIsApproved;
-        this.accountId = accountId;
+        this.account = account;
     }
 
     public int getLoanId() {
@@ -47,7 +58,7 @@ public class Loan {
         this.loanId = loanId;
     }
 
-    public int getLoanAmount() {
+    public double getLoanAmount() {
         return loanAmount;
     }
 
@@ -63,12 +74,12 @@ public class Loan {
         this.loanIsApproved = loanIsApproved;
     }
 
-    public Account getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(Account accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     @Override
@@ -77,7 +88,7 @@ public class Loan {
                 "loanId=" + loanId +
                 ", loanAmount=" + loanAmount +
                 ", loanIsApproved=" + loanIsApproved +
-                ", accountId=" + accountId +
+                ", accountId=" + account +
                 '}';
     }
 }

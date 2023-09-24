@@ -18,20 +18,20 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
     @JoinColumn(name = "userId")
-    private User userId;
+    private User user;
 
     public Account() {
     }
 
     public Account(int accountBalance, User userId) {
         this.accountBalance = accountBalance;
-        this.userId = userId;
+        this.user = userId;
     }
 
     public Account(int accountId, int accountBalance, User userId) {
         this.accountId = accountId;
         this.accountBalance = accountBalance;
-        this.userId = userId;
+        this.user = userId;
     }
 
     public int getAccountId() {
@@ -50,12 +50,12 @@ public class Account {
         this.accountBalance = accountBalance;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setUser(User userId) {
+        this.user = userId;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Account {
         return "Account{" +
                 "accountId=" + accountId +
                 ", accountBalance=" + accountBalance +
-                ", userId=" + userId +
+                ", userId=" + user +
                 '}';
     }
 }

@@ -47,7 +47,7 @@ public class AccountController {
     }
 
     @PostMapping("/new/{userId}")
-    public ResponseEntity<Object> insertLoan(@RequestBody Account account, @PathVariable("userId") int userId) {
+    public ResponseEntity<Object> insertAccount(@RequestBody Account account, @PathVariable("userId") int userId) {
         try {
             Account insertedAccount = accountService.insertAccount(account, userId);
             return ResponseEntity.accepted().body(insertedAccount);

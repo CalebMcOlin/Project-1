@@ -17,7 +17,7 @@ public class Account {
     private double accountBalance;
 
     @Column(nullable = false, columnDefinition="Decimal(10,3) default '0.000'")
-    private double accountInterestRate;
+    private double accountInterestRate = 0.045;;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
     @JoinColumn(name = "userId")
@@ -28,7 +28,7 @@ public class Account {
 
     public Account(double accountBalance, User userId) {
         this.accountBalance = accountBalance;
-        this.accountInterestRate = 0.45;
+//        this.accountInterestRate = 0.45;
         this.user = userId;
     }
 

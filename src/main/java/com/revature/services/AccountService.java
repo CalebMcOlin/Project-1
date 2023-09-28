@@ -7,6 +7,7 @@ import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public class AccountService {
     private final UserDAO userDAO;
 
     @Autowired
-    public AccountService(AccountDAO accountDAO,UserDAO userDAO) {
+    public AccountService(AccountDAO accountDAO, UserDAO userDAO) {
         this.accountDAO = accountDAO;
         this.userDAO = userDAO;
     }
@@ -72,12 +73,13 @@ public class AccountService {
         }
     }
 
-    public Account applyInterestRateByAccountId(int accountId){
+    public Account applyInterestRateByAccountId(int accountId) {
         Optional<Account> originalAccount = accountDAO.findById(accountId);
-        if(originalAccount.isPresent()){
+        if (originalAccount.isPresent()) {
+            DecimalFormat df2 = new DecimalFormat("###.##");
             double interestRate = originalAccount.get().getAccountInterestRate();
             double oldBalance = originalAccount.get().getAccountBalance();
-            double newBalance = oldBalance * (interestRate + 1);
+            double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
 
             Account updatedAccount = originalAccount.get();
             updatedAccount.setAccountBalance(newBalance);

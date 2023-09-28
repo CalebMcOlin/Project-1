@@ -71,4 +71,19 @@ public class AccountService {
             throw new IllegalArgumentException("User could not be found. Aborting Insert...");
         }
     }
+
+    public Account applyInterestRateByAccountId(int accountId){
+        Optional<Account> originalAccount = accountDAO.findById(accountId);
+        if(originalAccount.isPresent()){
+            double interestRate = originalAccount.get().getAccountInterestRate();
+            double oldBalance = originalAccount.get().getAccountBalance();
+            double newBalance = oldBalance * (interestRate + 1);
+
+            Account updatedAccount = originalAccount.get();
+            updatedAccount.setAccountBalance(newBalance);
+            return accountDAO.save(updatedAccount);
+        } else {
+            throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+        }
+    }
 }

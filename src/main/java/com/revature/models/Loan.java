@@ -20,7 +20,7 @@ public class Loan {
     @NonNull
     private boolean loanIsApproved;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Creating the FK
     @JoinColumn(name = "accountId")
     private Account account;
 

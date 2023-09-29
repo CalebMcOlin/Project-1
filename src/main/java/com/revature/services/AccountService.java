@@ -1,8 +1,10 @@
 package com.revature.services;
 
 import com.revature.doas.AccountDAO;
+import com.revature.doas.LoanDAO;
 import com.revature.doas.UserDAO;
 import com.revature.models.Account;
+import com.revature.models.Loan;
 import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,13 @@ public class AccountService {
 
     private final AccountDAO accountDAO;
     private final UserDAO userDAO;
+    private final LoanDAO loanDAO;
 
     @Autowired
-    public AccountService(AccountDAO accountDAO, UserDAO userDAO) {
+    public AccountService(AccountDAO accountDAO, UserDAO userDAO, LoanDAO loanDAO) {
         this.accountDAO = accountDAO;
         this.userDAO = userDAO;
+        this.loanDAO = loanDAO;
     }
 
     public List<Account> getAllAccounts() {
@@ -86,6 +90,22 @@ public class AccountService {
             return accountDAO.save(updatedAccount);
         } else {
             throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+        }
+
+    public Optional<Account> deleteAccount(int accountId) {
+        if (accountId <= 0) {
+            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+        }
+        Optional<Account> deletedAccount = accountDAO.findById(accountId);
+        if (deletedAccount.isEmpty()) {
+            throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
+        } else {
+            List<Loan> loans = loanDAO.findByAccount(deletedAccount);
+            for (Loan loan : loans) {
+                loanDAO.delete(loan);
+            }
+            accountDAO.deleteById(accountId);
+            return deletedAccount;
         }
     }
 }

@@ -19,7 +19,7 @@ public class Account {
     @Column(nullable = false, columnDefinition="Decimal(10,3) default '0.000'")
     private double accountInterestRate = 0.045;;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Creating the FK
     @JoinColumn(name = "userId")
     private User user;
 

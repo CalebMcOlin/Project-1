@@ -28,10 +28,12 @@ public class AccountService {
     }
 
     public List<Account> getAllAccounts() {
+        //are they the admin check?
         return accountDAO.findAll();
     }
 
     public Account getAccountByAccountId(int accountId) {
+        //self user check or is admin = true
         if (accountId <= 0) {
             throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
         }
@@ -44,6 +46,7 @@ public class AccountService {
     }
 
     public List<Account> getAccountByUserId(int userId) {
+        //self user check or is admin = true
         if (userId <= 0) {
             throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
         }
@@ -62,6 +65,7 @@ public class AccountService {
     }
 
     public Account insertAccount(Account account, int userId) {
+        //self user check. Low Prio
         if (userId <= 0) {
             throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
         }
@@ -78,6 +82,7 @@ public class AccountService {
     }
 
     public Account applyInterestRateByAccountId(int accountId) {
+        //admin check
         Optional<Account> originalAccount = accountDAO.findById(accountId);
         if (originalAccount.isPresent()) {
             DecimalFormat df2 = new DecimalFormat("###.##");
@@ -94,6 +99,7 @@ public class AccountService {
     }
 
     public Optional<Account> deleteAccount(int accountId) {
+        //admin check?
         if (accountId <= 0) {
             throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
         }

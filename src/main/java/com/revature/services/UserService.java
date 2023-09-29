@@ -20,6 +20,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers(){
+        //admin check
         return userDAO.findAll();
     }
 
@@ -28,7 +29,7 @@ public class UserService {
     }
 
     public User findByUserId(int id){
-
+        //self or admin = true
         if(id <= 0){
             throw new IllegalArgumentException("Users with an id of 0 or less surely can't exist!");
         }

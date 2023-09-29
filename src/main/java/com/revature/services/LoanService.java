@@ -23,10 +23,12 @@ public class LoanService {
     }
 
     public List<Loan> getAllLoans() {
+        //admin check
         return loanDAO.findAll();
     }
 
     public Loan getLoanById(int id) {
+        //self check or admin = true
         if (id <= 0) {
             throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
         }
@@ -40,6 +42,7 @@ public class LoanService {
     }
 
     public Loan updateLoanIsApprovedById(int id, boolean isApproved) {
+        //admin check
         if (id <= 0) {
             throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
         }
@@ -55,6 +58,7 @@ public class LoanService {
     }
 
     public Loan insertLoan(Loan loan, int accountId) {
+        //self check
         if (accountId <= 0) {
             throw new IllegalArgumentException("Accounts with an id of 0 or less do not exist.");
         }

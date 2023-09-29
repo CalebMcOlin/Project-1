@@ -91,6 +91,7 @@ public class AccountService {
         } else {
             throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
         }
+    }
 
     public Optional<Account> deleteAccount(int accountId) {
         if (accountId <= 0) {

@@ -66,7 +66,8 @@ public class AccountController {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-      
+    }
+
     @DeleteMapping("/delete/{accountId}")
     public ResponseEntity<Object> deleteAccount(@PathVariable("accountId") int accountId) {
         try {

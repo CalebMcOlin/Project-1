@@ -71,4 +71,17 @@ public class AccountService {
             throw new IllegalArgumentException("User could not be found. Aborting Insert...");
         }
     }
+
+    public Account updateAccountBalance(Account account, int amount) {
+        if (amount == 0) {
+            throw new IllegalArgumentException("You cannot withdraw / deposit $0, please provide an amount");
+        }
+
+        int newAmount = account.getAccountBalance() + amount;
+        if (newAmount < 0) {
+            throw new IllegalArgumentException("Withdraw amount is greater than this account's remaining balance");
+        }
+        account.setAccountBalance(newAmount);
+        return accountDAO.save(account);
+    }
 }

@@ -9,6 +9,7 @@ import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,6 +74,22 @@ public class AccountService {
             return accountDAO.save(account);
         } else {
             throw new IllegalArgumentException("User could not be found. Aborting Insert...");
+        }
+    }
+
+    public Account applyInterestRateByAccountId(int accountId) {
+        Optional<Account> originalAccount = accountDAO.findById(accountId);
+        if (originalAccount.isPresent()) {
+            DecimalFormat df2 = new DecimalFormat("###.##");
+            double interestRate = originalAccount.get().getAccountInterestRate();
+            double oldBalance = originalAccount.get().getAccountBalance();
+            double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
+
+            Account updatedAccount = originalAccount.get();
+            updatedAccount.setAccountBalance(newBalance);
+            return accountDAO.save(updatedAccount);
+        } else {
+            throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
         }
     }
 

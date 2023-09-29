@@ -58,6 +58,16 @@ public class AccountController {
         }
     }
 
+    @PatchMapping("/id/{accountId}")
+    public ResponseEntity<Object> applyInterestRateByAccountId(@PathVariable("accountId") int accountId) {
+        try {
+            return ResponseEntity.accepted().body(accountService.applyInterestRateByAccountId(accountId));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete/{accountId}")
     public ResponseEntity<Object> deleteAccount(@PathVariable("accountId") int accountId) {
         try {

@@ -16,7 +16,7 @@ public class Account {
     @Column(nullable = false)
     private int accountBalance;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Creating the FK
     @JoinColumn(name = "userId")
     private User user;
 

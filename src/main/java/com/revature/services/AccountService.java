@@ -21,7 +21,7 @@ public class AccountService {
     private final LoanDAO loanDAO;
 
     @Autowired
-    public AccountService(AccountDAO accountDAO,UserDAO userDAO) {
+    public AccountService(AccountDAO accountDAO, UserDAO userDAO, LoanDAO loanDAO) {
         this.accountDAO = accountDAO;
         this.userDAO = userDAO;
         this.loanDAO = loanDAO;

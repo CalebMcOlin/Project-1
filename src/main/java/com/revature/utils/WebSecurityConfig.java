@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    //This method configures which RESTful endpoints are universally accessible (login & add employee)
+    //This method configures which RESTful endpoints are universally accessible (login & add user)
     //VS which endpoints need the user to be logged in for. (everything else)
     @Override
     protected void configure(HttpSecurity http) throws Exception {

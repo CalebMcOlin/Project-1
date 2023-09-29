@@ -19,10 +19,10 @@ public class User implements UserDetails {
     private int userId;
 
     @Column(nullable = false, unique = true)
-    private String userUsername;
+    private String username;
 
     @Column(nullable = false)
-    private String userPassword;
+    private String password;
 
     @NonNull
     private boolean userIsAdmin;
@@ -30,16 +30,16 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String userUsername, String userPassword, boolean userIsAdmin) {
-        this.userUsername = userUsername;
-        this.userPassword = userPassword;
+    public User(String username, String password, boolean userIsAdmin) {
+        this.username = username;
+        this.password = password;
         this.userIsAdmin = userIsAdmin;
     }
 
-    public User(int userId, String userUsername, String userPassword, boolean userIsAdmin) {
+    public User(int userId, String username, String password, boolean userIsAdmin) {
         this.userId = userId;
-        this.userUsername = userUsername;
-        this.userPassword = userPassword;
+        this.username = username;
+        this.password = password;
         this.userIsAdmin = userIsAdmin;
     }
 
@@ -51,23 +51,23 @@ public class User implements UserDetails {
         this.userId = userId;
     }
 
-    public String getUserUsername() {
-        return userUsername;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassword() {
+        return this.password;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public boolean isUserIsAdmin() {
+    public boolean getUserIsAdmin() {
         return userIsAdmin;
     }
 
@@ -79,21 +79,10 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", userUsername='" + userUsername + '\'' +
-                ", userPassword='" + userPassword + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", userIsAdmin=" + userIsAdmin +
                 '}';
-    }
-
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
     }
 
     @Override
@@ -103,21 +92,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

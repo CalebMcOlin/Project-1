@@ -1,4 +1,4 @@
-package com.revature.doas;
+package com.revature.daos;
 
 import com.revature.models.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;

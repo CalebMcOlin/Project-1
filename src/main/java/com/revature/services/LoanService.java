@@ -1,7 +1,7 @@
 package com.revature.services;
 
-import com.revature.doas.AccountDAO;
-import com.revature.doas.LoanDAO;
+import com.revature.daos.AccountDAO;
+import com.revature.daos.LoanDAO;
 import com.revature.models.Account;
 import com.revature.models.Loan;
 import org.springframework.beans.factory.annotation.Autowired;

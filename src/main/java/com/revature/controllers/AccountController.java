@@ -58,7 +58,7 @@ public class AccountController {
         }
     }
 
-    @PatchMapping("/id/{accountId}")
+    @PatchMapping("/id/{accountId}/balance")
     public ResponseEntity<Object> updateAccountBalanceByAccountId(@PathVariable("accountId") int accountId, @RequestBody double amount) {
         try {
             Account account = accountService.getAccountByAccountId(accountId);
@@ -70,6 +70,7 @@ public class AccountController {
         }
     }
 
+    @PatchMapping("/id/{accountId}")
     public ResponseEntity<Object> applyInterestRateByAccountId(@PathVariable("accountId") int accountId) {
         try {
             return ResponseEntity.accepted().body(accountService.applyInterestRateByAccountId(accountId));

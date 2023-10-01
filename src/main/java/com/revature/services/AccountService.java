@@ -1,12 +1,15 @@
 package com.revature.services;
 
 import com.revature.doas.AccountDAO;
+import com.revature.doas.LoanDAO;
 import com.revature.doas.UserDAO;
 import com.revature.models.Account;
+import com.revature.models.Loan;
 import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,11 +18,13 @@ public class AccountService {
 
     private final AccountDAO accountDAO;
     private final UserDAO userDAO;
+    private final LoanDAO loanDAO;
 
     @Autowired
-    public AccountService(AccountDAO accountDAO,UserDAO userDAO) {
+    public AccountService(AccountDAO accountDAO, UserDAO userDAO, LoanDAO loanDAO) {
         this.accountDAO = accountDAO;
         this.userDAO = userDAO;
+        this.loanDAO = loanDAO;
     }
 
     public List<Account> getAllAccounts() {
@@ -72,16 +77,56 @@ public class AccountService {
         }
     }
 
-    public Account updateAccountBalance(Account account, int amount) {
+    public Account updateAccountBalance(Account account, double amount) {
         if (amount == 0) {
-            throw new IllegalArgumentException("You cannot withdraw / deposit $0, please provide an amount");
+            throw new IllegalArgumentException("You cannot withdraw or deposit $0, please provide an amount");
         }
 
-        int newAmount = account.getAccountBalance() + amount;
+        String amountString = Double.toString(amount);
+        int decimalPlaces = amountString.length() - amountString.indexOf(".") - 1;
+        if (decimalPlaces > 2) {
+            throw new IllegalArgumentException("You cannot withdraw or deposit any amount less than 1 cent");
+        }
+        System.out.println("balance: " + account.getAccountBalance());
+        System.out.println("amount to be updated with: " + amount);
+        double newAmount = account.getAccountBalance() + amount;
         if (newAmount < 0) {
             throw new IllegalArgumentException("Withdraw amount is greater than this account's remaining balance");
         }
         account.setAccountBalance(newAmount);
         return accountDAO.save(account);
+    }
+    
+    public Account applyInterestRateByAccountId(int accountId) {
+        Optional<Account> originalAccount = accountDAO.findById(accountId);
+        if (originalAccount.isPresent()) {
+            DecimalFormat df2 = new DecimalFormat("###.##");
+            double interestRate = originalAccount.get().getAccountInterestRate();
+            double oldBalance = originalAccount.get().getAccountBalance();
+            double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
+
+            Account updatedAccount = originalAccount.get();
+            updatedAccount.setAccountBalance(newBalance);
+            return accountDAO.save(updatedAccount);
+        } else {
+            throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+        }
+    }
+
+    public Optional<Account> deleteAccount(int accountId) {
+        if (accountId <= 0) {
+            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+        }
+        Optional<Account> deletedAccount = accountDAO.findById(accountId);
+        if (deletedAccount.isEmpty()) {
+            throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
+        } else {
+            List<Loan> loans = loanDAO.findByAccount(deletedAccount);
+            for (Loan loan : loans) {
+                loanDAO.delete(loan);
+            }
+            accountDAO.deleteById(accountId);
+            return deletedAccount;
+        }
     }
 }

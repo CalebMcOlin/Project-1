@@ -13,25 +13,44 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int accountId;
 
-    @Column(nullable = false)
-    private int accountBalance;
+    @Column(nullable = false, columnDefinition="DECIMAL(10,2) default '100.00'")
+    private double accountBalance;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // Creating the FK
+    @Column(nullable = false, columnDefinition="DECIMAL(10,3) default '0.000'")
+    private double accountInterestRate = 0.045;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Creating the FK
     @JoinColumn(name = "userId")
     private User user;
 
     public Account() {
     }
 
-    public Account(int accountBalance, User userId) {
+    public Account(double accountBalance, User userId) {
         this.accountBalance = accountBalance;
+//        this.accountInterestRate = 0.45;
         this.user = userId;
     }
 
-    public Account(int accountId, int accountBalance, User userId) {
+    public Account(double accountBalance, double accountInterestRate, User userId) {
+        this.accountBalance = accountBalance;
+        this.accountInterestRate = accountInterestRate;
+        this.user = userId;
+    }
+
+    public Account(int accountId, double accountBalance, double accountInterestRate, User userId) {
         this.accountId = accountId;
         this.accountBalance = accountBalance;
+        this.accountInterestRate = accountInterestRate;
         this.user = userId;
+    }
+
+    public double getAccountInterestRate() {
+        return accountInterestRate;
+    }
+
+    public void setAccountInterestRate(double accountInterestRate) {
+        this.accountInterestRate = accountInterestRate;
     }
 
     public int getAccountId() {
@@ -42,11 +61,11 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public int getAccountBalance() {
+    public double getAccountBalance() {
         return accountBalance;
     }
 
-    public void setAccountBalance(int accountBalance) {
+    public void setAccountBalance(double accountBalance) {
         this.accountBalance = accountBalance;
     }
 

@@ -87,8 +87,7 @@ public class AccountService {
         if (decimalPlaces > 2) {
             throw new IllegalArgumentException("You cannot withdraw or deposit any amount less than 1 cent");
         }
-        System.out.println("balance: " + account.getAccountBalance());
-        System.out.println("amount to be updated with: " + amount);
+        
         double newAmount = account.getAccountBalance() + amount;
         if (newAmount < 0) {
             throw new IllegalArgumentException("Withdraw amount is greater than this account's remaining balance");

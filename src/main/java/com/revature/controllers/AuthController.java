@@ -73,6 +73,7 @@ public class AuthController {
 
             ses = request.getSession();
             System.out.println("session " + ses);
+            ses.setAttribute("userId", loggedInUser.getUserId());
             ses.setAttribute("username", loggedInUser.getUsername());
             ses.setAttribute("userIsAdmin", loggedInUser.getUserIsAdmin());
 

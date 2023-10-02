@@ -29,52 +29,65 @@ public class AccountService {
     }
 
     public List<Account> getAllAccounts() {
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            return accountDAO.findAll();
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
         }
-        return null;
+        return accountDAO.findAll();
     }
 
     public Account getAccountByAccountId(int accountId) {
         //self user check or is admin
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            if (accountId <= 0) {
-                throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
-            }
-            Optional<Account> account = accountDAO.findById(accountId);
-            if (account.isPresent()) {
-                return account.get();
-            } else {
-                throw new IllegalArgumentException("Account with ID of " + accountId + " does not exist.");
-            }
+        if (accountId <= 0) {
+            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
         }
-        return  null;
+
+        Optional<Account> account = accountDAO.findById(accountId);
+        if (account.isEmpty()) {
+            throw new IllegalArgumentException("Account with ID of " + accountId + " does not exist.");
+        }
+
+        Account foundAccount= account.get();
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int userId= foundAccount.getUser().getUserId();
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        if (!adminChk || sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
+
+        return foundAccount;
     }
 
     public List<Account> getAccountByUserId(int userId) {
-        //self user check or is admin
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            if (userId <= 0) {
-                throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
-            }
-            Optional<User> user = userDAO.findById(userId);
-            List<Account> accounts;
-            if (user.isPresent()) {
-                accounts = accountDAO.findByUser(user);
-            } else {
-                throw new IllegalArgumentException("User with ID of " + userId + " do not exist.");
-            }
-            if (accounts.isEmpty()) {
-                throw new IllegalArgumentException("User with ID of " + userId + " does not have any account.");
-            } else {
-                return accounts;
-            }
+        //self user check or is admin DONE
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        if (!adminChk || sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
         }
-        return null;
+        if (userId <= 0) {
+            throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
+        }
+        Optional<User> user = userDAO.findById(userId);
+        List<Account> accounts;
+        if (user.isPresent()) {
+            accounts = accountDAO.findByUser(user);
+        } else {
+            throw new IllegalArgumentException("User with ID of " + userId + " do not exist.");
+
+        }
+        if (accounts.isEmpty()) {
+            throw new IllegalArgumentException("User with ID of " + userId + " does not have any account.");
+        }
+        return accounts;
     }
 
     public Account insertAccount(Account account, int userId) {
-        //self user check. Low Prio
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        if (!adminChk || sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         if (userId <= 0) {
             throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
         }
@@ -91,41 +104,43 @@ public class AccountService {
     }
 
     public Account applyInterestRateByAccountId(int accountId) {
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            Optional<Account> originalAccount = accountDAO.findById(accountId);
-            if (originalAccount.isPresent()) {
-                DecimalFormat df2 = new DecimalFormat("###.##");
-                double interestRate = originalAccount.get().getAccountInterestRate();
-                double oldBalance = originalAccount.get().getAccountBalance();
-                double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
-
-                Account updatedAccount = originalAccount.get();
-                updatedAccount.setAccountBalance(newBalance);
-                return accountDAO.save(updatedAccount);
-            } else {
-                throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
-            }
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
         }
-        return null;
+        Optional<Account> originalAccount = accountDAO.findById(accountId);
+        if (originalAccount.isPresent()) {
+            DecimalFormat df2 = new DecimalFormat("###.##");
+            double interestRate = originalAccount.get().getAccountInterestRate();
+            double oldBalance = originalAccount.get().getAccountBalance();
+            double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
+
+            Account updatedAccount = originalAccount.get();
+            updatedAccount.setAccountBalance(newBalance);
+            return accountDAO.save(updatedAccount);
+        } else {
+            throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+        }
     }
 
     public Optional<Account> deleteAccount(int accountId) {
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            if (accountId <= 0) {
-                throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
-            }
-            Optional<Account> deletedAccount = accountDAO.findById(accountId);
-            if (deletedAccount.isEmpty()) {
-                throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
-            } else {
-                List<Loan> loans = loanDAO.findByAccount(deletedAccount);
-                for (Loan loan : loans) {
-                    loanDAO.delete(loan);
-                }
-                accountDAO.deleteById(accountId);
-                return deletedAccount;
-            }
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
         }
-        return null;
+        if (accountId <= 0) {
+            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+        }
+        Optional<Account> deletedAccount = accountDAO.findById(accountId);
+        if (deletedAccount.isEmpty()) {
+            throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
+        } else {
+            List<Loan> loans = loanDAO.findByAccount(deletedAccount);
+            for (Loan loan : loans) {
+                loanDAO.delete(loan);
+            }
+            accountDAO.deleteById(accountId);
+            return deletedAccount;
+        }
     }
 }

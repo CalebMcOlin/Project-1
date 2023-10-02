@@ -13,11 +13,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int accountId;
 
-    @Column(nullable = false, columnDefinition="Decimal(10,2) default '100.00'")
+    @Column(nullable = false, columnDefinition="DECIMAL(10,2) default '100.00'")
     private double accountBalance;
 
-    @Column(nullable = false, columnDefinition="Decimal(10,3) default '0.000'")
-    private double accountInterestRate = 0.045;;
+    @Column(nullable = false, columnDefinition="DECIMAL(10,3) default '0.000'")
+    private double accountInterestRate = 0.045;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Creating the FK
     @JoinColumn(name = "userId")

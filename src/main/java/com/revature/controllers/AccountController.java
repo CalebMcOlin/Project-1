@@ -58,6 +58,18 @@ public class AccountController {
         }
     }
 
+    @PatchMapping("/id/{accountId}/balance")
+    public ResponseEntity<Object> updateAccountBalanceByAccountId(@PathVariable("accountId") int accountId, @RequestBody double amount) {
+        try {
+            Account account = accountService.getAccountByAccountId(accountId);
+            Account updatedAccount = accountService.updateAccountBalance(account, amount);
+            return ResponseEntity.accepted().body(updatedAccount);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PatchMapping("/id/{accountId}")
     public ResponseEntity<Object> applyInterestRateByAccountId(@PathVariable("accountId") int accountId) {
         try {

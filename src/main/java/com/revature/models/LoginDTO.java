@@ -6,9 +6,11 @@ public class LoginDTO {
     private String username;
     private String password;
 
+    //no args
     public LoginDTO() {
     }
 
+    //all args
     public LoginDTO(String username, String password) {
         this.username = username;
         this.password = password;

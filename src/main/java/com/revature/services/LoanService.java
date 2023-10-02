@@ -4,6 +4,7 @@ import com.revature.daos.AccountDAO;
 import com.revature.daos.LoanDAO;
 import com.revature.models.Account;
 import com.revature.models.Loan;
+import com.revature.controllers.AuthController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,56 +25,66 @@ public class LoanService {
 
     public List<Loan> getAllLoans() {
         //admin check
-        return loanDAO.findAll();
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            return loanDAO.findAll();
+
+        }
+        return null;
     }
 
     public Loan getLoanById(int id) {
         //self check or admin = true
-        if (id <= 0) {
-            throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
-        }
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            if (id <= 0) {
+                throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
+            }
 
-        Optional<Loan> loan = loanDAO.findById(id);
-        if (loan.isPresent()) {
-            return loan.get();
-        } else {
-            throw new IllegalArgumentException("Loan with ID of " + id + " does not exist.");
+            Optional<Loan> loan = loanDAO.findById(id);
+            if (loan.isPresent()) {
+                return loan.get();
+            } else {
+                throw new IllegalArgumentException("Loan with ID of " + id + " does not exist.");
+            }
         }
+        return null;
     }
 
     public Loan updateLoanIsApprovedById(int id, boolean isApproved) {
         //admin check
-        if (id <= 0) {
-            throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
-        }
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            if (id <= 0) {
+                throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
+            }
 
-        Optional<Loan> oldLoan = loanDAO.findById(id);
-        if (oldLoan.isPresent()) {
-            Loan newLoan = oldLoan.get();
-            newLoan.setLoanIsApproved(isApproved); //change the username to what was given in the params
-            return loanDAO.save(newLoan); //perform the update
-        } else {
-            throw new IllegalArgumentException("Loan with ID of " + id + " does not exist.");
+            Optional<Loan> oldLoan = loanDAO.findById(id);
+            if (oldLoan.isPresent()) {
+                Loan newLoan = oldLoan.get();
+                newLoan.setLoanIsApproved(isApproved); //change the username to what was given in the params
+                return loanDAO.save(newLoan); //perform the update
+            } else {
+                throw new IllegalArgumentException("Loan with ID of " + id + " does not exist.");
+            }
         }
+        return null;
     }
 
     public Loan insertLoan(Loan loan, int accountId) {
         //self check
-        if (accountId <= 0) {
-            throw new IllegalArgumentException("Accounts with an id of 0 or less do not exist.");
-        }
+            if (accountId <= 0) {
+                throw new IllegalArgumentException("Accounts with an id of 0 or less do not exist.");
+            }
 
-        if (loan.getLoanAmount() <= 0) {
-            throw new IllegalArgumentException("Loan Request can not be $0.00 or less.");
-        }
+            if (loan.getLoanAmount() <= 0) {
+                throw new IllegalArgumentException("Loan Request can not be $0.00 or less.");
+            }
 
-        Optional<Account> account = accountDAO.findById(accountId);
-        if (account.isPresent()) {
-            loan.setAccount(account.get());
-            return loanDAO.save(loan);
-        } else {
-            throw new IllegalArgumentException("Account could not be found. Aborting Insert...");
-        }
+            Optional<Account> account = accountDAO.findById(accountId);
+            if (account.isPresent()) {
+                loan.setAccount(account.get());
+                return loanDAO.save(loan);
+            } else {
+                throw new IllegalArgumentException("Account could not be found. Aborting Insert...");
+            }
     }
 
 }

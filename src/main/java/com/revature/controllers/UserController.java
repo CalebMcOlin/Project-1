@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/users")
 @CrossOrigin()
@@ -21,13 +20,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllAccounts() {
-        return ResponseEntity.ok().body(userService.getAllUsers());
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllAccounts() {
+        List<User> returnedUser;
+        try{
+            returnedUser = userService.getAllUsers();
+            return ResponseEntity.ok().body(returnedUser);
+        }catch (NullPointerException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     @GetMapping("id/{userId}")
-    public ResponseEntity<Object> getUserByUserId(@PathVariable("userId") int userId){
-        return null;
+    public ResponseEntity<Object> getUserByUserId(@PathVariable("userId") int userId) {
+        try {
+            return ResponseEntity.accepted().body(userService.findByUserId(userId));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

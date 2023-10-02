@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.controllers.AuthController;
 import com.revature.daos.AccountDAO;
 import com.revature.daos.LoanDAO;
 import com.revature.daos.UserDAO;
@@ -28,40 +29,48 @@ public class AccountService {
     }
 
     public List<Account> getAllAccounts() {
-        //are they the admin check?
-        return accountDAO.findAll();
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            return accountDAO.findAll();
+        }
+        return null;
     }
 
     public Account getAccountByAccountId(int accountId) {
-        //self user check or is admin = true
-        if (accountId <= 0) {
-            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+        //self user check or is admin
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            if (accountId <= 0) {
+                throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+            }
+            Optional<Account> account = accountDAO.findById(accountId);
+            if (account.isPresent()) {
+                return account.get();
+            } else {
+                throw new IllegalArgumentException("Account with ID of " + accountId + " does not exist.");
+            }
         }
-        Optional<Account> account = accountDAO.findById(accountId);
-        if (account.isPresent()) {
-            return account.get();
-        } else {
-            throw new IllegalArgumentException("Account with ID of " + accountId + " does not exist.");
-        }
+        return  null;
     }
 
     public List<Account> getAccountByUserId(int userId) {
-        //self user check or is admin = true
-        if (userId <= 0) {
-            throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
+        //self user check or is admin
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            if (userId <= 0) {
+                throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
+            }
+            Optional<User> user = userDAO.findById(userId);
+            List<Account> accounts;
+            if (user.isPresent()) {
+                accounts = accountDAO.findByUser(user);
+            } else {
+                throw new IllegalArgumentException("User with ID of " + userId + " do not exist.");
+            }
+            if (accounts.isEmpty()) {
+                throw new IllegalArgumentException("User with ID of " + userId + " does not have any account.");
+            } else {
+                return accounts;
+            }
         }
-        Optional<User> user = userDAO.findById(userId);
-        List<Account> accounts;
-        if (user.isPresent()) {
-            accounts = accountDAO.findByUser(user);
-        } else {
-            throw new IllegalArgumentException("User with ID of " + userId + " do not exist.");
-        }
-        if (accounts.isEmpty()) {
-            throw new IllegalArgumentException("User with ID of " + userId + " does not have any account.");
-        } else {
-            return accounts;
-        }
+        return null;
     }
 
     public Account insertAccount(Account account, int userId) {
@@ -82,37 +91,41 @@ public class AccountService {
     }
 
     public Account applyInterestRateByAccountId(int accountId) {
-        //admin check
-        Optional<Account> originalAccount = accountDAO.findById(accountId);
-        if (originalAccount.isPresent()) {
-            DecimalFormat df2 = new DecimalFormat("###.##");
-            double interestRate = originalAccount.get().getAccountInterestRate();
-            double oldBalance = originalAccount.get().getAccountBalance();
-            double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            Optional<Account> originalAccount = accountDAO.findById(accountId);
+            if (originalAccount.isPresent()) {
+                DecimalFormat df2 = new DecimalFormat("###.##");
+                double interestRate = originalAccount.get().getAccountInterestRate();
+                double oldBalance = originalAccount.get().getAccountBalance();
+                double newBalance = Double.parseDouble(df2.format(oldBalance * (interestRate + 1)));
 
-            Account updatedAccount = originalAccount.get();
-            updatedAccount.setAccountBalance(newBalance);
-            return accountDAO.save(updatedAccount);
-        } else {
-            throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+                Account updatedAccount = originalAccount.get();
+                updatedAccount.setAccountBalance(newBalance);
+                return accountDAO.save(updatedAccount);
+            } else {
+                throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+            }
         }
+        return null;
     }
 
     public Optional<Account> deleteAccount(int accountId) {
-        //admin check?
-        if (accountId <= 0) {
-            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
-        }
-        Optional<Account> deletedAccount = accountDAO.findById(accountId);
-        if (deletedAccount.isEmpty()) {
-            throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
-        } else {
-            List<Loan> loans = loanDAO.findByAccount(deletedAccount);
-            for (Loan loan : loans) {
-                loanDAO.delete(loan);
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            if (accountId <= 0) {
+                throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
             }
-            accountDAO.deleteById(accountId);
-            return deletedAccount;
+            Optional<Account> deletedAccount = accountDAO.findById(accountId);
+            if (deletedAccount.isEmpty()) {
+                throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
+            } else {
+                List<Loan> loans = loanDAO.findByAccount(deletedAccount);
+                for (Loan loan : loans) {
+                    loanDAO.delete(loan);
+                }
+                accountDAO.deleteById(accountId);
+                return deletedAccount;
+            }
         }
+        return null;
     }
 }

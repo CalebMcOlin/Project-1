@@ -13,7 +13,7 @@ import java.util.Collection;
 @Table(name = "users")
 @Component
 public class User implements UserDetails {
-
+//public class User{
     @Id // Creating the PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
@@ -30,6 +30,10 @@ public class User implements UserDetails {
     public User() {
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
     public User(String username, String password, boolean userIsAdmin) {
         this.username = username;
         this.password = password;
@@ -84,6 +88,9 @@ public class User implements UserDetails {
                 ", userIsAdmin=" + userIsAdmin +
                 '}';
     }
+
+    //AUTHORIZATION OVERRIDES----------
+    //to make use of JWTs in Spring Security, we need to make Employee implement UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

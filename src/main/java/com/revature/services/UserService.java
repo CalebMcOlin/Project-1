@@ -1,6 +1,8 @@
 package com.revature.services;
 
+import com.revature.controllers.AuthController;
 import com.revature.daos.UserDAO;
+import com.revature.models.LoginDTO;
 import com.revature.models.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,10 @@ public class UserService {
 
     public List<User> getAllUsers(){
         //admin check
-        return userDAO.findAll();
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            return userDAO.findAll();
+        }
+        return null;
     }
 
     public User insertUser(User user){
@@ -30,23 +35,31 @@ public class UserService {
 
     public User findByUserId(int id){
         //self or admin = true
-        if(id <= 0){
-            throw new IllegalArgumentException("Users with an id of 0 or less surely can't exist!");
-        }
+        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
+            if (id <= 0) {
+                throw new IllegalArgumentException("Users with an id of 0 or less surely can't exist!");
+            }
 
         /*findById() from JpaRepository returns an "Optional"
         Optionals lend to code flexibility because it MAY or MAY NOT contain the requested object
         This helps us avoid NullPointerExceptions */
-        Optional<User> user = userDAO.findById(id);
+            Optional<User> user = userDAO.findById(id);
 
-        //we can check if the optional has our value with .isPresent() or .isEmpty()
-        if(user.isPresent()){
-            return user.get(); //we can extract the Optional's data with .get()
-        } else {
-            throw new IllegalArgumentException("User id " + id + " does not exist!");
+            //we can check if the optional has our value with .isPresent() or .isEmpty()
+            if (user.isPresent()) {
+                return user.get(); //we can extract the Optional's data with .get()
+            } else {
+                throw new IllegalArgumentException("User id " + id + " does not exist!");
+            }
         }
+        return null;
 
     }
 
-
+    public User login(LoginDTO loginDTO) {
+        Optional<User> user = userDAO.findByUsername(loginDTO.getUsername());
+        User loginUser = user.get();
+        System.out.println(loginUser);
+        return loginUser;
+    }
 }

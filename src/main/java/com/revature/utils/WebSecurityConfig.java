@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //here's the actual code that allows/restricts access to different endpoints/controllers
         http.authorizeRequests()
-                .antMatchers("/auth").permitAll()
+                .antMatchers("/auth/*").permitAll()
                 .anyRequest().authenticated();
 
 

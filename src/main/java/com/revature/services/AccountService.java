@@ -51,7 +51,7 @@ public class AccountService {
         boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
         int userId= foundAccount.getUser().getUserId();
         int sesId = (int) AuthController.ses.getAttribute("userId");
-        if (!adminChk || sesId != userId) {
+        if (!adminChk && sesId != userId) {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
 
@@ -62,7 +62,7 @@ public class AccountService {
         //self user check or is admin DONE
         boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
         int sesId = (int) AuthController.ses.getAttribute("userId");
-        if (!adminChk || sesId != userId) {
+        if (!adminChk && sesId != userId) {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (userId <= 0) {
@@ -85,7 +85,7 @@ public class AccountService {
     public Account insertAccount(Account account, int userId) {
         boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
         int sesId = (int) AuthController.ses.getAttribute("userId");
-        if (!adminChk || sesId != userId) {
+        if (!adminChk && sesId != userId) {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (userId <= 0) {

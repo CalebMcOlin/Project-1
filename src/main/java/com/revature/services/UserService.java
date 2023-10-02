@@ -23,10 +23,12 @@ public class UserService {
 
     public List<User> getAllUsers(){
         //admin check
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            return userDAO.findAll();
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
         }
-        return null;
+        return userDAO.findAll();
     }
 
     public User insertUser(User user){
@@ -35,25 +37,23 @@ public class UserService {
 
     public User findByUserId(int id){
         //self or admin = true
-        if ((boolean) AuthController.ses.getAttribute("userIsAdmin")) {
-            if (id <= 0) {
-                throw new IllegalArgumentException("Users with an id of 0 or less surely can't exist!");
-            }
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int sesId = (int) AuthController.ses.getAttribute("userId");
 
-        /*findById() from JpaRepository returns an "Optional"
-        Optionals lend to code flexibility because it MAY or MAY NOT contain the requested object
-        This helps us avoid NullPointerExceptions */
-            Optional<User> user = userDAO.findById(id);
-
-            //we can check if the optional has our value with .isPresent() or .isEmpty()
-            if (user.isPresent()) {
-                return user.get(); //we can extract the Optional's data with .get()
-            } else {
-                throw new IllegalArgumentException("User id " + id + " does not exist!");
-            }
+        if (!adminChk && sesId != id) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
         }
-        return null;
+        if (id <= 0) {
+            throw new IllegalArgumentException("Users with an id of 0 or less surely can't exist!");
+        }
 
+        Optional<User> user = userDAO.findById(id);
+
+        if (user.isPresent()) {
+            return user.get(); //we can extract the Optional's data with .get()
+        } else {
+            throw new IllegalArgumentException("User id " + id + " does not exist!");
+        }
     }
 
     public User login(LoginDTO loginDTO) {

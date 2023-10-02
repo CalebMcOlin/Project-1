@@ -26,7 +26,7 @@ public class UserController {
         try{
             returnedUser = userService.getAllUsers();
             return ResponseEntity.ok().body(returnedUser);
-        }catch (NullPointerException e){
+        }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 

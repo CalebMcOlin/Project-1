@@ -39,11 +39,15 @@ public class LoanService {
         int sesId = (int) AuthController.ses.getAttribute("userId");
 
         Optional<Loan> loan = loanDAO.findById(id);
+        if (loan.isEmpty()) {
+            throw new IllegalArgumentException("Loans with an id of " + id + " do not exist.");
+        }
+
         Loan receivedLoan = loan.get();
         Account account = receivedLoan.getAccount();
         int userId= account.getUser().getUserId();
 
-        if (!adminChk || sesId != userId) {
+        if (!adminChk && sesId != userId) {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (id <= 0) {
@@ -82,7 +86,7 @@ public class LoanService {
         int sesId = (int) AuthController.ses.getAttribute("userId");
         int userId = gotAccount.getUser().getUserId();
         boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
-        if (!adminChk || sesId != userId) {
+        if (!adminChk && sesId != userId) {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (accountId <= 0) {

@@ -1,24 +1,28 @@
 package com.revature.models;
 
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Table(name = "users")
 @Component
-public class User {
-
+public class User implements UserDetails {
+//public class User{
     @Id // Creating the PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
 
     @Column(nullable = false, unique = true)
-    private String userUsername;
+    private String username;
 
     @Column(nullable = false)
-    private String userPassword;
+    private String password;
 
     @NonNull
     private boolean userIsAdmin;
@@ -26,16 +30,20 @@ public class User {
     public User() {
     }
 
-    public User(String userUsername, String userPassword, boolean userIsAdmin) {
-        this.userUsername = userUsername;
-        this.userPassword = userPassword;
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    public User(String username, String password, boolean userIsAdmin) {
+        this.username = username;
+        this.password = password;
         this.userIsAdmin = userIsAdmin;
     }
 
-    public User(int userId, String userUsername, String userPassword, boolean userIsAdmin) {
+    public User(int userId, String username, String password, boolean userIsAdmin) {
         this.userId = userId;
-        this.userUsername = userUsername;
-        this.userPassword = userPassword;
+        this.username = username;
+        this.password = password;
         this.userIsAdmin = userIsAdmin;
     }
 
@@ -47,23 +55,23 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUserUsername() {
-        return userUsername;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassword() {
+        return this.password;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public boolean isUserIsAdmin() {
+    public boolean getUserIsAdmin() {
         return userIsAdmin;
     }
 
@@ -75,9 +83,37 @@ public class User {
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", userUsername='" + userUsername + '\'' +
-                ", userPassword='" + userPassword + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", userIsAdmin=" + userIsAdmin +
                 '}';
+    }
+
+    //AUTHORIZATION OVERRIDES----------
+    //to make use of JWTs in Spring Security, we need to make Employee implement UserDetails
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

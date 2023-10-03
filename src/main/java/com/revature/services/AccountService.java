@@ -1,8 +1,9 @@
 package com.revature.services;
 
-import com.revature.doas.AccountDAO;
-import com.revature.doas.LoanDAO;
-import com.revature.doas.UserDAO;
+import com.revature.controllers.AuthController;
+import com.revature.daos.AccountDAO;
+import com.revature.daos.LoanDAO;
+import com.revature.daos.UserDAO;
 import com.revature.models.Account;
 import com.revature.models.Loan;
 import com.revature.models.User;
@@ -28,22 +29,42 @@ public class AccountService {
     }
 
     public List<Account> getAllAccounts() {
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         return accountDAO.findAll();
     }
 
     public Account getAccountByAccountId(int accountId) {
+        //self user check or is admin
         if (accountId <= 0) {
             throw new IllegalArgumentException("Account with an id of 0 or less cannot exist.");
         }
+
         Optional<Account> account = accountDAO.findById(accountId);
-        if (account.isPresent()) {
-            return account.get();
-        } else {
+        if (account.isEmpty()) {
             throw new IllegalArgumentException("Account with ID of " + accountId + " does not exist.");
         }
+
+        Account foundAccount= account.get();
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int userId= foundAccount.getUser().getUserId();
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        if (!adminChk && sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
+
+        return foundAccount;
     }
 
     public List<Account> getAccountByUserId(int userId) {
+        //self user check or is admin DONE
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        if (!adminChk && sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         if (userId <= 0) {
             throw new IllegalArgumentException("User with an id of 0 or less cannot exist.");
         }
@@ -55,13 +76,17 @@ public class AccountService {
             throw new IllegalArgumentException("User with ID of " + userId + " does not exist.");
         }
         if (accounts.isEmpty()) {
-            throw new IllegalArgumentException("User with ID of " + userId + " does not have any account(s).");
-        } else {
-            return accounts;
+            throw new IllegalArgumentException("User with ID of " + userId + " does not have any account.");
         }
+        return accounts;
     }
 
     public Account insertAccount(Account account, int userId) {
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        if (!adminChk && sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         if (userId <= 0) {
             throw new IllegalArgumentException("User with an id of 0 or less cannot exist.");
         }
@@ -97,6 +122,10 @@ public class AccountService {
     }
     
     public Account applyInterestRateByAccountId(int accountId) {
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         Optional<Account> originalAccount = accountDAO.findById(accountId);
         if (originalAccount.isPresent()) {
             DecimalFormat df2 = new DecimalFormat("###.##");
@@ -113,6 +142,10 @@ public class AccountService {
     }
 
     public Optional<Account> deleteAccount(int accountId) {
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        if (!adminChk) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         if (accountId <= 0) {
             throw new IllegalArgumentException("Account with an id of 0 or less cannot exist.");
         }

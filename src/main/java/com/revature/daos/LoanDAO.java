@@ -1,4 +1,4 @@
-package com.revature.doas;
+package com.revature.daos;
 
 import com.revature.models.Account;
 import com.revature.models.Loan;

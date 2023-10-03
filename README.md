@@ -20,7 +20,7 @@ Trello Board can be found [here](https://trello.com/b/U5FNzX2p/project-1-group-2
 --TRUNCATE TABLE loans;
 
 
-INSERT INTO users (user_is_admin, user_password, user_username)
+INSERT INTO users (user_is_admin, password, username)
 	VALUES 
 	(FALSE, 'password', 'username1'),
 	(FALSE, 'password', 'username2'),

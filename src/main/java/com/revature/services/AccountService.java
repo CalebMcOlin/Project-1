@@ -103,6 +103,12 @@ public class AccountService {
     }
 
     public Account updateAccountBalance(Account account, double amount) {
+        boolean adminChk = (boolean) AuthController.ses.getAttribute("userIsAdmin");
+        int sesId = (int) AuthController.ses.getAttribute("userId");
+        int userId = account.getUser().getUserId();
+        if (!adminChk && sesId != userId) {
+            throw new IllegalArgumentException("You do not have permission to access this information");
+        }
         if (amount == 0) {
             throw new IllegalArgumentException("You cannot withdraw or deposit $0, please provide an amount");
         }

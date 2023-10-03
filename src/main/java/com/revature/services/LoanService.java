@@ -51,7 +51,7 @@ public class LoanService {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (id <= 0) {
-            throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Loans with an id of 0 or less cannot exist.");
         }
         return receivedLoan;
     }
@@ -64,7 +64,7 @@ public class LoanService {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (id <= 0) {
-            throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Loans with an id of 0 or less cannot exist.");
         }
 
         Optional<Loan> oldLoan = loanDAO.findById(id);
@@ -90,7 +90,7 @@ public class LoanService {
             throw new IllegalArgumentException("You do not have permission to access this information");
         }
         if (accountId <= 0) {
-            throw new IllegalArgumentException("Accounts with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Accounts with an id of 0 or less cannot exist.");
         }
 
         if (loan.getLoanAmount() <= 0) {

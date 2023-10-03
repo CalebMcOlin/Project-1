@@ -31,7 +31,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/id/{accountId}")
+    @GetMapping("/{accountId}")
     public ResponseEntity<Object> getAccountByAccountId(@PathVariable("accountId") int accountId) {
         try {
             return ResponseEntity.accepted().body(accountService.getAccountByAccountId(accountId));
@@ -51,7 +51,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/new/{userId}")
+    @PostMapping("/user/{userId}/new")
     public ResponseEntity<Object> insertAccount(@RequestBody Account account, @PathVariable("userId") int userId) {
         try {
             Account insertedAccount = accountService.insertAccount(account, userId);
@@ -62,7 +62,19 @@ public class AccountController {
         }
     }
 
-    @PatchMapping("/id/{accountId}")
+    @PatchMapping("/{accountId}/balance")
+    public ResponseEntity<Object> updateAccountBalanceByAccountId(@PathVariable("accountId") int accountId, @RequestBody double amount) {
+        try {
+            Account account = accountService.getAccountByAccountId(accountId);
+            Account updatedAccount = accountService.updateAccountBalance(account, amount);
+            return ResponseEntity.accepted().body(updatedAccount);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/{accountId}/interest")
     public ResponseEntity<Object> applyInterestRateByAccountId(@PathVariable("accountId") int accountId) {
         try {
             return ResponseEntity.accepted().body(accountService.applyInterestRateByAccountId(accountId));
@@ -72,7 +84,7 @@ public class AccountController {
         }
     }
 
-    @DeleteMapping("/delete/{accountId}")
+    @DeleteMapping("/{accountId}/delete")
     public ResponseEntity<Object> deleteAccount(@PathVariable("accountId") int accountId) {
         try {
             return ResponseEntity.accepted().body(accountService.deleteAccount(accountId));

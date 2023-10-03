@@ -28,7 +28,7 @@ public class LoanService {
 
     public Loan getLoanById(int id) {
         if (id <= 0) {
-            throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Loans with an id of 0 or less cannot exist.");
         }
 
         Optional<Loan> loan = loanDAO.findById(id);
@@ -41,7 +41,7 @@ public class LoanService {
 
     public Loan updateLoanIsApprovedById(int id, boolean isApproved) {
         if (id <= 0) {
-            throw new IllegalArgumentException("Loans with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Loans with an id of 0 or less cannot exist.");
         }
 
         Optional<Loan> oldLoan = loanDAO.findById(id);
@@ -56,7 +56,7 @@ public class LoanService {
 
     public Loan insertLoan(Loan loan, int accountId) {
         if (accountId <= 0) {
-            throw new IllegalArgumentException("Accounts with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Accounts with an id of 0 or less cannot exist.");
         }
 
         if (loan.getLoanAmount() <= 0) {

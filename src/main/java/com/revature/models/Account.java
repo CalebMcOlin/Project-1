@@ -28,7 +28,6 @@ public class Account {
 
     public Account(double accountBalance, User userId) {
         this.accountBalance = accountBalance;
-//        this.accountInterestRate = 0.45;
         this.user = userId;
     }
 

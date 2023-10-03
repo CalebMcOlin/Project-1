@@ -26,8 +26,8 @@ public class LoanController {
         return ResponseEntity.ok().body(loanService.getAllLoans());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getLoanById(@PathVariable("id") int id) {
+    @GetMapping("/{loanId}")
+    public ResponseEntity<Object> getLoanById(@PathVariable("loanId") int id) {
         try {
             return ResponseEntity.ok().body(loanService.getLoanById(id));
         } catch (IllegalArgumentException e) {
@@ -36,8 +36,8 @@ public class LoanController {
         }
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateLoanIsApprovedById(@PathVariable("id") int id, @RequestBody boolean isApproved) {
+    @PatchMapping("/{loanId}/approval")
+    public ResponseEntity<Object> updateLoanIsApprovedById(@PathVariable("loanId") int id, @RequestBody boolean isApproved) {
         try {
             return ResponseEntity.accepted().body(loanService.updateLoanIsApprovedById(id, isApproved));
         } catch (IllegalArgumentException e) {
@@ -46,7 +46,7 @@ public class LoanController {
         }
     }
 
-    @PostMapping("/new/{accountId}")
+    @PostMapping("/account/{accountId}/new")
     public ResponseEntity<Object> insertLoan(@RequestBody Loan loan, @PathVariable("accountId") int accountId) {
         try {
             Loan insertedLoan = loanService.insertLoan(loan, accountId);

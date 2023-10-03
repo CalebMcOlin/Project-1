@@ -14,7 +14,7 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int loanId;
 
-    @NonNull
+    @Column(nullable = false, columnDefinition="DECIMAL(10,2) default '100.00'")
     private double loanAmount;
 
     @NonNull
@@ -27,23 +27,23 @@ public class Loan {
     public Loan() {
     }
 
-    public Loan(int loanAmount) {
+    public Loan(double loanAmount) {
         this.loanAmount = loanAmount;
         this.loanIsApproved = false;
     }
 
-    public Loan(int loanAmount, boolean loanIsApproved) {
+    public Loan(double loanAmount, boolean loanIsApproved) {
         this.loanAmount = loanAmount;
         this.loanIsApproved = loanIsApproved;
     }
 
-    public Loan(int loanAmount, boolean loanIsApproved, Account account) {
+    public Loan(double loanAmount, boolean loanIsApproved, Account account) {
         this.loanAmount = loanAmount;
         this.loanIsApproved = loanIsApproved;
         this.account = account;
     }
 
-    public Loan(int loanId, int loanAmount, boolean loanIsApproved, Account account) {
+    public Loan(int loanId, double loanAmount, boolean loanIsApproved, Account account) {
         this.loanId = loanId;
         this.loanAmount = loanAmount;
         this.loanIsApproved = loanIsApproved;
@@ -62,7 +62,7 @@ public class Loan {
         return loanAmount;
     }
 
-    public void setLoanAmount(int loanAmount) {
+    public void setLoanAmount(double loanAmount) {
         this.loanAmount = loanAmount;
     }
 

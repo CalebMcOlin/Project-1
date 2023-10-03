@@ -33,7 +33,7 @@ public class AccountService {
 
     public Account getAccountByAccountId(int accountId) {
         if (accountId <= 0) {
-            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Account with an id of 0 or less cannot exist.");
         }
         Optional<Account> account = accountDAO.findById(accountId);
         if (account.isPresent()) {
@@ -45,17 +45,17 @@ public class AccountService {
 
     public List<Account> getAccountByUserId(int userId) {
         if (userId <= 0) {
-            throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("User with an id of 0 or less cannot exist.");
         }
         Optional<User> user = userDAO.findById(userId);
         List<Account> accounts;
         if (user.isPresent()) {
             accounts = accountDAO.findByUser(user);
         } else {
-            throw new IllegalArgumentException("User with ID of " + userId + " do not exist.");
+            throw new IllegalArgumentException("User with ID of " + userId + " does not exist.");
         }
         if (accounts.isEmpty()) {
-            throw new IllegalArgumentException("User with ID of " + userId + " does not have any account.");
+            throw new IllegalArgumentException("User with ID of " + userId + " does not have any account(s).");
         } else {
             return accounts;
         }
@@ -63,7 +63,7 @@ public class AccountService {
 
     public Account insertAccount(Account account, int userId) {
         if (userId <= 0) {
-            throw new IllegalArgumentException("User with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("User with an id of 0 or less cannot exist.");
         }
         if (account.getAccountBalance() <= 0) {
             throw new IllegalArgumentException("Account balance can not be negative number.");
@@ -108,17 +108,17 @@ public class AccountService {
             updatedAccount.setAccountBalance(newBalance);
             return accountDAO.save(updatedAccount);
         } else {
-            throw new IllegalArgumentException("Account was not found! Aborting Interest Update.");
+            throw new IllegalArgumentException("Account was not found! Aborting Interest Update...");
         }
     }
 
     public Optional<Account> deleteAccount(int accountId) {
         if (accountId <= 0) {
-            throw new IllegalArgumentException("Account with an id of 0 or less do not exist.");
+            throw new IllegalArgumentException("Account with an id of 0 or less cannot exist.");
         }
         Optional<Account> deletedAccount = accountDAO.findById(accountId);
         if (deletedAccount.isEmpty()) {
-            throw new IllegalArgumentException("User with ID of " + accountId + " do not exist.");
+            throw new IllegalArgumentException("User with ID of " + accountId + " does not exist.");
         } else {
             List<Loan> loans = loanDAO.findByAccount(deletedAccount);
             for (Loan loan : loans) {
